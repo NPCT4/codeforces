@@ -72,7 +72,7 @@ ll work1(ll res){
 	ans=max(ans,test22_3(res));
 	ans=max(ans,test3_2(res));
 	ans=max(ans,test2_1(res));
-	return res;
+	return ans;
 }
 
 ll test3_1(ll res){
@@ -95,6 +95,53 @@ ll work2(ll res){
 	return max(res,test3_1(res));
 }
 
+ll test3_21(ll res){
+	int A=0,B1=0,B2=0;
+	for(int i=1;i<=n;i++){
+		if(!p[i].used&&p[i].w==3){
+			A=i;break;
+		}
+	}
+	for(int i=n;i>=1;i--){
+		if(p[i].used&&p[i].w==2){
+			B1=i;break;
+		}
+	}
+	for(int i=n;i>=1;i--){
+		if(p[i].used&&p[i].w==1){
+			B2=i;break;
+		}
+	}
+	if(A==0||B1==0||B2==0) return res;
+	return max(res,res+p[A].c-p[B1].c-p[B2].c);
+}
+
+ll test2_11(ll res){
+	int A=0,B1=0,B2=0;
+	for(int i=1;i<=n;i++){
+		if(!p[i].used&&p[i].w==2){
+			A=i;break;
+		}
+	}
+	for(int i=n;i>=1;i--){
+		if(p[i].used&&p[i].w==1){
+			if(B1==0) B1=i;
+			else if(B2==0){
+				B2=i;break;
+			}
+		}
+	}
+	if(A==0||B1==0||B2==0) return res;
+	return max(res,res+p[A].c-p[B1].c-p[B2].c);
+}
+
+ll work0(ll res){
+	ll ans=res;
+	ans=max(ans,test3_21(res));
+	ans=max(ans,test2_11(res));
+	return ans;
+}
+
 int main(){
 #ifndef ONLINE_JUDGE
 	freopen("in.txt","r",stdin);
@@ -110,9 +157,9 @@ int main(){
 				p[i].used=1;
 			}
 		}
-		cout<<"m="<<m<<endl;
-		if(m==1) work1(res);
-		else if(m==2) work2(res);
+		if(m==0) res=max(res,work0(res));
+		else if(m==1) res=max(res,work1(res));
+		else if(m==2) res=max(res,work2(res));
 		cout<<res<<endl;
 	}
 	return 0;
