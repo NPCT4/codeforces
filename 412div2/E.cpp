@@ -1,0 +1,103 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+
+typedef long long ll;
+const int maxn=1000100;
+const int INF=1e9+10;
+
+int n;
+ll a[maxn];
+int cnt[62];
+ll b[maxn],bn;
+int R;
+bool flag;
+int c[maxn],sc[maxn];
+int ans[maxn],ansn;
+
+bool Add(ll x){
+	for(int i=0;i<=60;i++){
+		if(x==(1LL<<i)){
+			cnt[i]++;
+			return 1;
+		}
+	}
+	return 0;
+}
+
+void init(){
+	flag=1;
+	for(int i=1;i<=60;i++){
+		while(cnt[i]>cnt[i-1]){
+			b[++bn]=(1LL<<i);
+			cnt[i]--;
+		}
+	}
+	for(int i=60;i>=1;i--) cnt[i]=cnt[i-1]-cnt[i];
+	cnt[0]=0;
+	sort(b+1,b+bn+1);
+	R=0;
+	int now=60;
+	for(int i=bn;i>=1;i--){
+		while(now>0&&cnt[now]==0) now--;
+		if(now==0||(1LL<<now)<=b[i]){
+			flag=0;return;
+		}
+		cnt[now]--;
+		R++;
+	}
+}
+
+bool can(int k,int N){
+	return sc[k]<=N-k;
+}
+
+void solve(){
+	if(flag==0) return;
+	ansn=0;
+	sc[0]=c[0]=0;
+	int cn=0;
+	for(int i=1;i<=60;i++){
+		for(int j=1;j<=cnt[i];j++){
+			++cn;
+			c[cn]=i;
+			sc[cn]=sc[cn-1]+c[cn];
+		}
+	}
+	int t=0;
+	for(int i=0;i<=cn;i++){
+		if(can(i,cn)) ans[++ansn]=R+cn-i;
+	}
+}
+
+int main(){
+#ifndef ONLINE_JUDGE
+	freopen("in.txt","r",stdin);
+#endif
+	while(cin>>n){
+		bn=0;
+		memset(cnt,0,sizeof(cnt));
+		for(int i=1;i<=n;i++){
+			scanf("%lld",&a[i]);
+			if(!Add(a[i])) b[++bn]=a[i];
+		}
+		init();
+		solve();
+		if(!flag) puts("-1");
+		else{
+			sort(ans+1,ans+ansn+1);
+			for(int i=1;i<=ansn;i++) printf("%d ",ans[i]);puts("");
+		}
+	}
+	return 0;
+}
+/*
+8
+1 1 2 2 3 4 5 8
+
+6
+1 1 1 2 2 2
+
+5
+1 2 4 4 4
+*/
